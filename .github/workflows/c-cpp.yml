@@ -36,60 +36,45 @@ jobs:
       - name: Prepare .config
         run: |
           cat > .config <<'EOF'
-          CONFIG_TARGET_ramips=y
-          CONFIG_TARGET_ramips_mt76x8=y
-          CONFIG_TARGET_ramips_mt76x8_DEVICE_tl-wr840n-v6.2=y
+# ===== TARGET DEVICE =====
+CONFIG_TARGET_ramips=y
+CONFIG_TARGET_ramips_mt76x8=y
+CONFIG_TARGET_ramips_mt76x8_DEVICE_tplink_tl-wr840n-v6=y
 
-          CONFIG_TARGET_ROOTFS_SQUASHFS=y
-          CONFIG_TARGET_SQUASHFS_BLOCK_SIZE=512
+# ===== DRIVER & CORE SYSTEM =====
+CONFIG_PACKAGE_kmod-mt76x8=y
+CONFIG_PACKAGE_wpad-basic-wolfssl=y
 
-          # Global build settings
-          # CONFIG_SIGNED_PACKAGES is not set
-          # CONFIG_SIGNATURE_CHECK is not set
-          CONFIG_CLEAN_IPKG=y
-          # CONFIG_IPV6 is not set
-          # CONFIG_KERNEL_IPV6 is not set
-          CONFIG_STRIP_KERNEL_EXPORTS=y
-          CONFIG_USE_MKLIBS=y
-          # CONFIG_KERNEL_DEBUG_FS is not set
-          # CONFIG_MAC80211_DEBUGFS is not set
-          # CONFIG_KERNEL_KALLSYMS is not set
-          # CONFIG_KERNEL_DEBUG_INFO is not set
-          CONFIG_KERNEL_SQUASHFS_FRAGMENT_CACHE_SIZE=1
-          CONFIG_KERNEL_CC_OPTIMIZE_FOR_SIZE=y
-          CONFIG_TARGET_OPTIMIZATION="-Os -pipe -mno-branch-likely -mips32r2 -mtune=24kc"
+# ===== LUCI (Web UI) =====
+CONFIG_PACKAGE_luci=y
+CONFIG_PACKAGE_luci-theme-bootstrap=y
+CONFIG_PACKAGE_luci-mod-status=y
+CONFIG_PACKAGE_luci-app-firewall=y
 
-          # Base system
-          # CONFIG_PACKAGE_opkg is not set
-          # CONFIG_PACKAGE_openwrt-keyring is not set
-          # CONFIG_PACKAGE_libpthread is not set
+# ===== SQM QoS =====
+CONFIG_PACKAGE_luci-app-sqm=y
+CONFIG_PACKAGE_sqm-scripts=y
+CONFIG_PACKAGE_kmod-sched-cake=y
+CONFIG_PACKAGE_kmod-ifb=y
+CONFIG_PACKAGE_tc=y
+CONFIG_PACKAGE_ip-full=y
 
-          # Network
-          # CONFIG_PACKAGE_ppp is not set
-          # CONFIG_PACKAGE_kmod-ppp is not set
+# ===== SIZE OPTIMIZATION (WAJIB UNTUK 4MB) =====
+CONFIG_IPV6=n
+CONFIG_PACKAGE_ipv6helper=n
+CONFIG_PACKAGE_ppp=n
+CONFIG_PACKAGE_pppoe=n
+CONFIG_PACKAGE_kmod-ppp=n
+CONFIG_PACKAGE_kmod-pppoe=n
+CONFIG_PACKAGE_kmod-ipv6=n
+CONFIG_PACKAGE_luci-proto-ppp=n
+CONFIG_PACKAGE_luci-ssl=n
+CONFIG_PACKAGE_opkg=n
+CONFIG_BUSYBOX_CUSTOM=n
 
-          # Web server
-          CONFIG_PACKAGE_uhttpd=y
-          CONFIG_PACKAGE_uhttpd-mod-ubus=y
-
-          # LuCI
-          CONFIG_PACKAGE_luci=y
-          CONFIG_PACKAGE_luci-base=y
-          CONFIG_PACKAGE_luci-mod-admin-full=y
-          CONFIG_PACKAGE_luci-mod-network=y
-          CONFIG_PACKAGE_luci-mod-status=y
-          CONFIG_PACKAGE_luci-mod-system=y
-          CONFIG_PACKAGE_luci-theme-bootstrap=y
-          CONFIG_LUCI_SRCDIET=y
-
-          # Wireless + EAP
-          CONFIG_PACKAGE_wpad-wolfssl=y
-          # CONFIG_PACKAGE_wpad-mini is not set
-          # CONFIG_PACKAGE_wpad-basic is not set
-          # CONFIG_PACKAGE_wpad-eap is not set
-          CONFIG_PACKAGE_ca-certificates=y
-          CONFIG_PACKAGE_iwinfo=y
-          EOF
+# ===== LOGGING (optional untuk debug GitHub Actions) =====
+CONFIG_BUILD_LOG=y
+        EOF
 
       - name: Feeds update/install
         run: |

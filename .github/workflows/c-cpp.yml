@@ -74,7 +74,7 @@ jobs:
           
           # ===== LOGGING (optional untuk debug GitHub Actions) =====
           CONFIG_BUILD_LOG=y
-        EOF
+          EOF
 
       - name: Feeds update/install
         run: |
